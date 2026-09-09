@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<title>NKT Rescue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#e53935; --yellow:#fdd835; --green:#43a047; --white:#ffffff; --black:#212121;
+    --navy:#0a2e4d; --blue:#146aa8; --blue-light:#2f8fd1;
+    --hivis:#8bd13c; --hivis-dark:#5c9a1e; --hivis-soft:#eef8e0;
+    --ink:#1f2430; --muted:#5f6b66; --line:#dbe4de; --bg:#f1f6f3; --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Sarabun', 'Segoe UI', Tahoma, sans-serif; background:var(--bg); color:var(--ink);
+    padding-bottom:40px;
+  }
+  header{
+    background:linear-gradient(135deg,var(--navy),var(--blue-light)); color:#fff; padding:14px 16px 16px; text-align:center;
+    position:sticky; top:0; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,.15);
+    border-bottom:4px solid var(--hivis);
+  }
+  .brand-logo{
+    display:block; margin:0 auto 8px; width:64px; height:64px; border-radius:50%;
+    background:#fff; padding:3px; box-shadow:0 2px 8px rgba(0,0,0,.25); object-fit:cover;
+  }
+  header h1{
+    margin:0; font-family:'Kanit', 'Sarabun', sans-serif; font-weight:600; font-size:22px; letter-spacing:.02em;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+  }
+  header h1 .heart-ekg{display:inline-flex; line-height:0;}
+  header .sub{font-family:'Kanit','Sarabun',sans-serif; font-weight:400; font-size:12.5px; letter-spacing:.03em; opacity:.9; margin-top:3px;}
+  .wrap{max-width:640px; margin:0 auto; padding:16px;}
+  .hidden{display:none !important;}
+
+  /* Home screen */
+  .home-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
+  .home-card{
+    background:var(--card); border-radius:16px; padding:28px 12px; text-align:center; cursor:pointer;
+    border:2px solid var(--line); transition:.15s; box-shadow:0 2px 6px rgba(0,0,0,.05);
+  }
+  .home-card:active{transform:scale(.97);}
+  .home-card .icon{font-size:42px; margin-bottom:8px;}
+  .home-card.ems{border-color:#ffcdd2;}
+  .home-card.refer{border-color:#bbdefb;}
+  .home-card h2{margin:4px 0 2px; font-size:18px;}
+  .home-card p{margin:0; font-size:12px; color:var(--muted);}
+
+  /* Form */
+  .topbar{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .back-btn{
+    background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 14px; font-size:14px;
+    cursor:pointer; color:var(--ink);
+  }
+  .form-title{font-size:18px; font-weight:700; margin:0;}
+
+  .section{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px;
+  }
+  .section h3{
+    margin:0 0 12px; font-size:14px; color:var(--blue); border-bottom:1px solid var(--line); padding-bottom:8px;
+  }
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:13px; color:var(--muted); margin-bottom:4px;}
+  .field input[type=text], .field input[type=number], .field input[type=tel],
+  .field input[type=date], .field input[type=time], .field input[type=password],
+  .field textarea, .field select{
+    width:100%; padding:10px; border:1px solid var(--line); border-radius:8px; font-size:14px; background:#fff;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:56px; font-family:inherit;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+  .row4{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px;}
+
+  .time-row{display:flex; gap:6px; align-items:center;}
+  .time-row input{flex:1;}
+  .now-btn{
+    background:var(--hivis-soft); border:1px solid #c9e6a8; color:var(--hivis-dark); border-radius:8px; padding:9px 10px;
+    font-size:12px; white-space:nowrap; cursor:pointer;
+  }
+
+  .chip-group{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    padding:9px 14px; border-radius:999px; border:2px solid var(--line); background:#fff; font-size:13px;
+    cursor:pointer; color:var(--ink);
+  }
+  .chip.active{border-color:var(--hivis-dark); background:var(--hivis-soft); font-weight:700; color:var(--hivis-dark);}
+  .other-text-input{
+    display:block; width:100%; margin-top:6px; padding:9px 12px; border-radius:10px;
+    border:2px solid var(--hivis-dark); font-size:13px; box-sizing:border-box;
+  }
+
+  .sev-btn{
+    padding:10px 14px; border-radius:10px; border:2px solid transparent; font-size:13px; font-weight:600;
+    cursor:pointer; color:#fff;
+  }
+  .sev-red{background:var(--red);}
+  .sev-yellow{background:var(--yellow); color:#5c4400;}
+  .sev-green{background:var(--green);}
+  .sev-white{background:#fff; color:#333; border:2px solid #ccc;}
+  .sev-black{background:var(--black);}
+  .sev-btn.active{outline:3px solid #1a73e8; outline-offset:2px;}
+
+  .outcome-btn{
+    padding:10px 12px; border-radius:10px; border:2px solid var(--line); background:#fff; font-size:13px;
+    cursor:pointer; font-weight:600;
+  }
+  .outcome-btn.active{border-color:var(--hivis-dark); background:var(--hivis-soft); color:var(--hivis-dark);}
+
+  .total-box{
+    background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px; text-align:center;
+    font-weight:700; color:#166534; font-size:14px;
+  }
+
+  .submit-btn{
+    width:100%; padding:14px; border:none; border-radius:12px;
+    background:linear-gradient(90deg,var(--navy),var(--hivis-dark)); color:#fff;
+    font-size:16px; font-weight:700; cursor:pointer; margin-top:6px;
+  }
+  .submit-btn:disabled{opacity:.6;}
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#212121; color:#fff;
+    padding:12px 20px; border-radius:10px; font-size:14px; z-index:99; box-shadow:0 4px 14px rgba(0,0,0,.25);
+    max-width:90%; text-align:center;
+  }
+  .toast.err{background:#b91c1c;}
+  .gcs-total{font-weight:700; color:var(--blue);}
+
+  /* Record list (view/edit) */
+  .list-controls{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .list-search-btn{
+    width:100%; padding:10px; border:1px solid var(--blue); background:#fff; color:var(--blue);
+    border-radius:10px; font-weight:600; font-size:14px; cursor:pointer; margin:4px 0 10px;
+  }
+  .record-list{display:flex; flex-direction:column; gap:8px;}
+  .record-card{border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:#fafcfb;}
+  .record-card .rc-top{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:700; color:var(--navy); gap:8px;}
+  .record-card .rc-top span:last-child{font-weight:500; color:var(--muted); font-size:12px; white-space:nowrap;}
+  .record-card .rc-sub{font-size:12px; color:var(--muted); margin-top:3px;}
+  .record-card .rc-actions{display:flex; gap:8px; margin-top:8px;}
+  .rc-edit-btn{flex:1; padding:8px; border-radius:8px; border:1px solid var(--blue); background:#eaf3fb; color:var(--blue); font-size:12.5px; font-weight:600; cursor:pointer;}
+  .rc-pdf-btn{flex:1; padding:8px; border-radius:8px; border:1px solid var(--hivis-dark); background:var(--hivis-soft); color:var(--hivis-dark); font-size:12.5px; font-weight:600; cursor:pointer;}
+  .rc-del-btn{padding:8px 12px; border-radius:8px; border:1px solid #f6cfcb; background:#fdecea; color:#b3261e; font-size:12.5px; cursor:pointer;}
+  .record-empty{font-size:13px; color:var(--muted); text-align:center; padding:14px 0;}
+  .edit-banner{
+    background:#fff8e1; border:1px solid #ffe0a3; color:#8a5a00; border-radius:10px; padding:10px 12px;
+    font-size:13px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .edit-banner button{background:#fff; border:1px solid #d8b46a; border-radius:8px; padding:6px 10px; font-size:12px; cursor:pointer; color:#8a5a00; white-space:nowrap;}
+
+  /* Login */
+  .login-wrap{display:flex; align-items:center; justify-content:center; min-height:60vh;}
+  .login-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 24px;
+    max-width:320px; width:100%; box-shadow:0 4px 16px rgba(0,0,0,.06); text-align:center;
+  }
+  .login-logo{margin:0 auto 20px; width:84px; height:84px;}
+  .login-title{
+    margin:0 0 20px; font-family:'Kanit','Sarabun',sans-serif; font-weight:600; font-size:21px; color:var(--navy);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .login-card .field{text-align:left;}
+  .login-card input{text-align:center; letter-spacing:.08em; font-size:16px;}
+  .login-error{
+    background:#fdecea; color:#b3261e; border-radius:8px; padding:8px 10px; font-size:12.5px; margin-bottom:10px;
+  }
+  .session-bar{
+    max-width:640px; margin:12px auto 0; padding:8px 14px; display:flex; align-items:center;
+    justify-content:space-between; background:var(--card); border:1px solid var(--line);
+    border-radius:10px; font-size:12.5px; color:var(--ink);
+  }
+  .logout-btn{
+    background:#fdecea; color:#b3261e; border:1px solid #f6cfcb; border-radius:8px; padding:6px 12px;
+    font-size:12px; cursor:pointer;
+  }
+  .credit{
+    position:fixed; left:10px; bottom:6px; font-size:11px; color:var(--muted); opacity:.75;
+    z-index:5; pointer-events:none;
+  }
+
+  /* Line copy modal */
+  .lc-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200;
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .lc-overlay.show{display:flex;}
+  .lc-box{
+    background:var(--card); border-radius:16px; max-width:480px; width:100%;
+    max-height:86vh; display:flex; flex-direction:column; box-shadow:0 10px 30px rgba(0,0,0,.3);
+    overflow:hidden;
+  }
+  .lc-head{
+    padding:16px 18px; background:linear-gradient(135deg,var(--navy),var(--blue-light));
+    color:#fff; font-family:'Kanit','Sarabun',sans-serif; font-weight:600; font-size:16px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .lc-close{background:none; border:none; color:#fff; font-size:20px; cursor:pointer; line-height:1;}
+  .lc-body{padding:14px 18px; overflow-y:auto;}
+  .lc-textarea{
+    width:100%; min-height:320px; border:1px solid var(--line); border-radius:10px;
+    padding:12px; font-size:13.5px; line-height:1.55; font-family:'Sarabun',sans-serif;
+    color:var(--ink); background:#fafafa; resize:vertical;
+  }
+  .lc-actions{
+    padding:12px 18px 18px; display:flex; gap:10px;
+  }
+  .lc-copy-btn{
+    flex:1; padding:12px; border:none; border-radius:10px; background:var(--hivis-dark);
+    color:#fff; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .lc-later-btn{
+    padding:12px 16px; border:1px solid var(--line); border-radius:10px; background:#fff;
+    color:var(--ink); font-size:14px; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚑 NKT Rescue
+    <span class="heart-ekg" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" fill="#ff5252"/>
+        <polyline points="3,13 7,13 9,7 11,18 13,9 15,13 21,13" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </h1>
+  <div class="sub" id="headerSub">ER Nakhonthai Crown Prince Hospital</div>
+</header>
+
+<div class="session-bar hidden" id="sessionBar">
+  <span>เจ้าหน้าที่: <b id="sessionStaffId">-</b></span>
+  <button class="logout-btn" onclick="openSummaryReport()" style="background:#0a7;">📊 สรุป EMS&amp;REFER</button>
+  <button class="logout-btn" onclick="doLogout()">ออกจากระบบ</button>
+</div>
+
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-logo" style="font-size:48px; text-align:center; line-height:84px;">🚑</div>
+        <div id="loginError" class="login-error hidden"></div>
+        <div class="field"><label>รหัส (ID)</label>
+          <input type="text" id="loginId" maxlength="8" autocapitalize="characters" style="text-transform:uppercase;" oninput="syncLoginPw(this.value)">
+        </div>
+        <div class="field"><label>รหัสผ่าน (Password)</label>
+          <input type="password" id="loginPw" maxlength="8" style="text-transform:uppercase;">
+        </div>
+        <button class="submit-btn" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="hidden">
+    <div class="home-grid">
+      <div class="home-card ems" onclick="showEMS()">
+        <div class="icon">🚑</div>
+        <h2>EMS</h2>
+        <p>บันทึกปฏิบัติการรับ-ส่งผู้ป่วยฉุกเฉิน</p>
+      </div>
+      <div class="home-card refer" onclick="showRefer()">
+        <div class="icon">👩‍⚕️</div>
+        <h2>REFER</h2>
+        <p>บันทึกการส่งต่อผู้ป่วย</p>
+      </div>
+    </div>
+
+    <div class="section list-section">
+      <h3>รายการเคส EMS (ดู / แก้ไข)</h3>
+      <div class="list-controls">
+        <div class="field"><label>จากวันที่</label><input type="date" id="e_listFrom"></div>
+        <div class="field"><label>ถึงวันที่</label><input type="date" id="e_listTo"></div>
+      </div>
+      <button type="button" class="list-search-btn" onclick="loadEMSList()">แสดงรายการ</button>
+      <div id="e_listBox" class="record-list"></div>
+    </div>
+
+    <div class="section list-section">
+      <h3>รายการเคส REFER (ดู / แก้ไข)</h3>
+      <div class="list-controls">
+        <div class="field"><label>จากวันที่</label><input type="date" id="r_listFrom"></div>
+        <div class="field"><label>ถึงวันที่</label><input type="date" id="r_listTo"></div>
+      </div>
+      <button type="button" class="list-search-btn" onclick="loadReferList()">แสดงรายการ</button>
+      <div id="r_listBox" class="record-list"></div>
+    </div>
+  </div>
+
+  <!-- EMS FORM -->
+  <div id="emsForm" class="hidden">
+    <div class="topbar">
+      <button class="back-btn" onclick="showHome()">← กลับ</button>
+      <p class="form-title">แบบบันทึก EMS</p>
+    </div>
+    <form id="emsFormEl" onsubmit="return false;">
+
+      <div class="section">
+        <h3>ข้อมูลทั่วไป</h3>
+        <div class="row2">
+          <div class="field"><label>วันที่</label><input type="date" id="e_date" required onchange="updateSeqPreview()"></div>
+          <div class="field"><label>ลำดับ (เหตุที่)</label><input type="text" id="e_seq" placeholder="เหตุที่..." readonly style="background:#f0f0f0; font-weight:700;"></div>
+        </div>
+        <div class="field"><label>เลขปฏิบัติการ</label><input type="text" id="e_opNo"></div>
+        <div class="field">
+          <label>เวร</label>
+          <div class="chip-group" id="e_shiftGroup">
+            <button type="button" class="chip" data-val="เช้า" onclick="pickChip(this,'e_shiftGroup','shift')">เช้า</button>
+            <button type="button" class="chip" data-val="บ่าย" onclick="pickChip(this,'e_shiftGroup','shift')">บ่าย</button>
+            <button type="button" class="chip" data-val="ดึก" onclick="pickChip(this,'e_shiftGroup','shift')">ดึก</button>
+          </div>
+        </div>
+        <div class="row3">
+          <div class="field"><label>เจ้าหน้าที่ผู้ให้บริการ 1</label><select id="e_rn"></select></div>
+          <div class="field"><label>เจ้าหน้าที่ผู้ให้บริการ 2</label><select id="e_aemt"></select></div>
+          <div class="field"><label>ผู้ช่วยเหลือ (PN/NA)</label><select id="e_helper"></select></div>
+          <div class="field"><label>เจ้าหน้าที่ (พขร.)</label><select id="e_driver"></select></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>เหตุการณ์</h3>
+        <div class="field">
+          <label>รับแจ้งจาก</label>
+          <div class="chip-group" id="e_receivedFromGroup">
+            <button type="button" class="chip" data-val="1669" onclick="pickChip(this,'e_receivedFromGroup','receivedFrom')">1669</button>
+            <button type="button" class="chip" data-val="ER" onclick="pickChip(this,'e_receivedFromGroup','receivedFrom')">ER</button>
+            <button type="button" class="chip" data-val="วิทยุ" onclick="pickChip(this,'e_receivedFromGroup','receivedFrom')">วิทยุ</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>ประเภทเหตุการณ์</label>
+          <div class="chip-group" id="e_incidentTypeGroup">
+            <button type="button" class="chip" data-val="พรบ" onclick="pickChip(this,'e_incidentTypeGroup','incidentType')">พรบ</button>
+            <button type="button" class="chip" data-val="อุบัติเหตุ" onclick="pickChip(this,'e_incidentTypeGroup','incidentType')">อุบัติเหตุ</button>
+            <button type="button" class="chip" data-val="ฉุกเฉิน" onclick="pickChip(this,'e_incidentTypeGroup','incidentType')">ฉุกเฉิน</button>
+          </div>
+        </div>
+        <div class="field"><label>เหตุการณ์</label><textarea id="e_incident"></textarea></div>
+        <div class="field"><label>สถานที่</label><input type="text" id="e_location"></div>
+        <div class="field"><label>เบอร์ผู้แจ้ง</label><input type="tel" id="e_callerPhone"></div>
+        <div class="field">
+          <label>ระดับความรุนแรง</label>
+          <div class="chip-group" id="e_severityGroup">
+            <button type="button" class="sev-btn sev-red" data-val="สีแดง" onclick="pickSeverity(this)">สีแดง</button>
+            <button type="button" class="sev-btn sev-yellow" data-val="สีเหลือง" onclick="pickSeverity(this)">สีเหลือง</button>
+            <button type="button" class="sev-btn sev-green" data-val="สีเขียว" onclick="pickSeverity(this)">สีเขียว</button>
+            <button type="button" class="sev-btn sev-white" data-val="สีขาว" onclick="pickSeverity(this)">สีขาว</button>
+            <button type="button" class="sev-btn sev-black" data-val="สีดำ" onclick="pickSeverity(this)">สีดำ</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>ประเภท</label>
+          <div class="chip-group" id="e_traumaGroup">
+            <button type="button" class="chip" data-val="Trauma" onclick="pickChip(this,'e_traumaGroup','trauma')">Trauma</button>
+            <button type="button" class="chip" data-val="Non-Trauma" onclick="pickChip(this,'e_traumaGroup','trauma')">Non-Trauma</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>พบเหตุ</label>
+          <div class="chip-group" id="e_foundGroup">
+            <button type="button" class="chip" data-val="พบเหตุ" onclick="pickChip(this,'e_foundGroup','found')">พบเหตุ</button>
+            <button type="button" class="chip" data-val="ไม่พบเหตุ" onclick="pickChip(this,'e_foundGroup','found')">ไม่พบเหตุ</button>
+            <button type="button" class="chip" data-val="ไม่ประสงค์ รพ." onclick="pickChip(this,'e_foundGroup','found')">ไม่ประสงค์ รพ.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>เวลาปฏิบัติการ</h3>
+        <div class="field"><label>รับแจ้ง</label>
+          <div class="time-row"><input type="time" id="e_tReceived" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tReceived')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>สั่งการ</label>
+          <div class="time-row"><input type="time" id="e_tDispatch" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tDispatch')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>ออกฐาน</label>
+          <div class="time-row"><input type="time" id="e_tDepartStation" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tDepartStation')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>ถึงเหตุ</label>
+          <div class="time-row"><input type="time" id="e_tArriveScene" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tArriveScene')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>ออกเหตุ</label>
+          <div class="time-row"><input type="time" id="e_tDepartScene" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tDepartScene')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>ถึง รพ.</label>
+          <div class="time-row"><input type="time" id="e_tArriveHospital" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tArriveHospital')">ตอนนี้</button></div>
+        </div>
+        <div class="field"><label>ถึงฐาน</label>
+          <div class="time-row"><input type="time" id="e_tArriveStation" oninput="updateTimeCalc()"><button type="button" class="now-btn" onclick="setNow('e_tArriveStation')">ตอนนี้</button></div>
+        </div>
+        <div class="total-box">Response time: <span id="e_responseTime">-</span> นาที &nbsp; | &nbsp; Hospital Time: <span id="e_hospitalTime">-</span> นาที</div>
+      </div>
+
+      <div class="section">
+        <h3>เลขไมล์</h3>
+        <div class="row2">
+          <div class="field"><label>ออก</label><input type="number" step="0.1" id="e_mileOut" oninput="calcTotalKm()"></div>
+          <div class="field"><label>ถึงเหตุ</label><input type="number" step="0.1" id="e_mileScene" oninput="calcTotalKm()"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>ถึง รพ.</label><input type="number" step="0.1" id="e_mileHospital" oninput="calcTotalKm()"></div>
+          <div class="field"><label>ถึงฐาน</label><input type="number" step="0.1" id="e_mileStation" oninput="calcTotalKm()"></div>
+        </div>
+        <div class="total-box">ระยะทางรวม: <span id="e_totalKm">0</span> กม.</div>
+      </div>
+
+      <div class="section lock-when-notfound">
+        <h3>ข้อมูลผู้ป่วย</h3>
+        <div class="field"><label>ชื่อผู้ป่วย (พิมพ์คำนำหน้าด้วย เช่น นาย/นาง/นางสาว/เด็กชาย/เด็กหญิง)</label><input type="text" id="e_patientName"></div>
+        <div class="row3">
+          <div class="field"><label>อายุ (ปี)</label><input type="number" id="e_age"></div>
+          <div class="field"><label>ID</label><input type="text" id="e_patientId" oninput="onPatientIdInput()"></div>
+          <div class="field"><label>HN</label><input type="text" id="e_hn"></div>
+        </div>
+        <div class="field">
+          <label>ที่อยู่</label>
+          <select id="e_address">
+            <option value="">— เลือกตำบล —</option>
+            <option>นครไทย</option>
+            <option>หนองกระท้าว</option>
+            <option>นาบัว</option>
+            <option>เนินเพิ่ม</option>
+            <option>บ้านพร้าว</option>
+            <option>บ่อโพธิ์</option>
+            <option>ยางโกลน</option>
+            <option>ห้วยเฮี้ย</option>
+            <option>นครชุม</option>
+            <option>น้ำกุ่ม</option>
+            <option>นอกเขต</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>สัญชาติ/ประเภทผู้ป่วย (ติ๊ก "คนไทย" ให้อัตโนมัติเมื่อกรอกเลข ID)</label>
+          <div class="chip-group" id="e_nationalityGroup">
+            <button type="button" class="chip" data-val="คนไทย" onclick="pickChip(this,'e_nationalityGroup','nationality'); updateNationalityDetailVisibility();">คนไทย</button>
+            <button type="button" class="chip" data-val="แรงงานต่างด้าว" onclick="pickChip(this,'e_nationalityGroup','nationality'); updateNationalityDetailVisibility();">แรงงานต่างด้าว</button>
+            <button type="button" class="chip" data-val="ชาวต่างชาติ" onclick="pickChip(this,'e_nationalityGroup','nationality'); updateNationalityDetailVisibility();">ชาวต่างชาติ</button>
+          </div>
+        </div>
+        <div class="field hidden" id="e_nationalityDetailBox">
+          <label>ประเภทแรงงาน/สัญชาติ (ระบุ)</label>
+          <input type="text" id="e_nationalityDetail">
+        </div>
+        <div class="field">
+          <label>สิทธิการรักษา</label>
+          <div class="chip-group" id="e_rightsGroup">
+            <button type="button" class="chip" data-val="บัตรทอง" onclick="pickChip(this,'e_rightsGroup','rights')">บัตรทอง</button>
+            <button type="button" class="chip" data-val="ข้าราชการ" onclick="pickChip(this,'e_rightsGroup','rights')">ข้าราชการ</button>
+            <button type="button" class="chip" data-val="ประกันสังคม" onclick="pickChip(this,'e_rightsGroup','rights')">ประกันสังคม</button>
+            <button type="button" class="chip" data-val="แรงงานต่างด้าวขึ้นทะเบียน" onclick="pickChip(this,'e_rightsGroup','rights')">แรงงานต่างด้าวขึ้นทะเบียน</button>
+            <button type="button" class="chip" data-val="ไม่มีหลักประกัน" onclick="pickChip(this,'e_rightsGroup','rights')">ไม่มีหลักประกัน</button>
+          </div>
+        </div>
+        <div class="field"><label>Dx (การวินิจฉัย)</label><input type="text" id="e_dx"></div>
+      </div>
+
+      <div class="section lock-when-notfound">
+        <h3>Vital Signs</h3>
+        <div class="row2">
+          <div class="field"><label>BP (mmHg)</label><input type="text" id="e_bp" placeholder="เช่น 120/80"></div>
+          <div class="field"><label>PR (bpm)</label><input type="number" id="e_pr"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>RR (bpm)</label><input type="number" id="e_rr"></div>
+          <div class="field"><label>BT (°C)</label><input type="number" step="0.1" id="e_bt"></div>
+        </div>
+        <div class="field"><label>O2sat (%)</label><input type="number" id="e_o2sat"></div>
+        <div class="field">
+          <label>GCS</label>
+          <div class="row3">
+            <input type="number" min="1" max="4" id="e_gcsE" placeholder="E" oninput="calcGCS()">
+            <input type="number" min="1" max="5" id="e_gcsV" placeholder="V" oninput="calcGCS()">
+            <input type="number" min="1" max="6" id="e_gcsM" placeholder="M" oninput="calcGCS()">
+          </div>
+          <div style="margin-top:6px;">รวม GCS = <span class="gcs-total" id="e_gcsTotal">0</span></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Pupil ซ้าย (Lt)</label><input type="text" id="e_pupilL"></div>
+          <div class="field"><label>Pupil ขวา (Rt)</label><input type="text" id="e_pupilR"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>DTX (mg%)</label><input type="number" id="e_dtx"></div>
+        </div>
+        <div class="field"><label>Treatment</label><textarea id="e_treatment"></textarea></div>
+        <div class="field" id="e_vitalExtraContainer" style="margin-top:10px;"></div>
+        <button type="button" onclick="addVitalExtra()" style="margin-top:6px;">➕ เพิ่มชุด Vital Signs (ประเมินซ้ำ)</button>
+      </div>
+
+      <div class="section hidden lock-when-notfound" id="traumaDetailSection">
+        <h3>Trauma</h3>
+        <div class="field"><label>บาดแผล</label><div class="chip-group" id="e_wound"></div></div>
+        <div class="field"><label>กระดูกผิดรูป</label><div class="chip-group" id="e_deform"></div></div>
+        <div class="field"><label>การเสียเลือด</label><div class="chip-group" id="e_bleed"></div></div>
+        <div class="field"><label>อวัยวะที่บาดเจ็บ</label><div class="chip-group" id="e_organ"></div></div>
+      </div>
+
+      <div class="section hidden lock-when-notfound" id="nonTraumaDetailSection">
+        <h3>Non-Trauma</h3>
+        <div class="field"><label>อายุรกรรม</label><div class="chip-group" id="e_medical"></div></div>
+        <div class="field"><label>สูติ-นรีเวช</label><div class="chip-group" id="e_obgyn"></div></div>
+        <div class="field"><label>กุมารเวชกรรม</label><div class="chip-group" id="e_peds"></div></div>
+        <div class="field"><label>ศัลยกรรม</label><div class="chip-group" id="e_surgical"></div></div>
+        <div class="field"><label>อื่นๆ</label><div class="chip-group" id="e_otherNT"></div></div>
+      </div>
+
+      <div class="section lock-when-notfound">
+        <h3>การช่วยเหลือ (Treatment)</h3>
+        <div class="field"><label>ทางเดินหายใจ/การหายใจ</label><div class="chip-group" id="e_airway"></div></div>
+        <div class="field"><label>บาดแผล/ห้ามเลือด</label><div class="chip-group" id="e_woundCare"></div></div>
+        <div class="field"><label>การให้สารน้ำ</label><div class="chip-group" id="e_fluid"></div></div>
+        <div class="field"><label>ดามกระดูก</label><div class="chip-group" id="e_splint"></div></div>
+        <div class="field"><label>การทำ CPR</label><div class="chip-group" id="e_cpr"></div></div>
+        <div class="field">
+          <label>ผลการดูแลรักษาขั้นต้น</label>
+          <div class="chip-group" id="e_initialCareGroup">
+            <button type="button" class="chip" data-val="ไม่ยอมให้รักษา" onclick="pickChip(this,'e_initialCareGroup','initialCare')">ไม่ยอมให้รักษา</button>
+            <button type="button" class="chip" data-val="ทุเลา" onclick="pickChip(this,'e_initialCareGroup','initialCare')">ทุเลา</button>
+            <button type="button" class="chip" data-val="คงเดิม/คงที่" onclick="pickChip(this,'e_initialCareGroup','initialCare')">คงเดิม/คงที่</button>
+            <button type="button" class="chip" data-val="ทรุดหนัก" onclick="pickChip(this,'e_initialCareGroup','initialCare')">ทรุดหนัก</button>
+            <button type="button" class="chip" data-val="เสียชีวิต ณ จุดเกิดเหตุ" onclick="pickChip(this,'e_initialCareGroup','initialCare')">เสียชีวิต ณ จุดเกิดเหตุ</button>
+            <button type="button" class="chip" data-val="เสียชีวิตขณะนำส่ง" onclick="pickChip(this,'e_initialCareGroup','initialCare')">เสียชีวิตขณะนำส่ง</button>
+          </div>
+        </div>
+        <div class="field hidden" id="deathSignatureBox">
+          <label>ลายเซ็นญาติรับทราบการเสียชีวิต ณ จุดเกิดเหตุ</label>
+          <div style="border:1px solid #ccc; border-radius:8px; background:#fff; overflow:hidden;">
+            <canvas id="e_deathSigCanvas" width="600" height="180" style="width:100%; height:180px; touch-action:none; display:block; background:#fff;"></canvas>
+          </div>
+          <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+            <button type="button" onclick="clearDeathSignature()">🧹 ล้างลายเซ็น</button>
+            <span style="font-size:12px; color:#666;">ให้ญาติเซ็นด้วยนิ้ว/เมาส์ในกรอบด้านบน (เหมือนเซ็นรับพัสดุ)</span>
+          </div>
+          <div class="field"><label>ชื่อ-นามสกุล ญาติผู้เซ็นรับทราบ</label><input type="text" id="e_deathSignerName" placeholder="ชื่อ-นามสกุล ญาติ"></div>
+          <div class="field">
+            <label>รูปถ่ายยืนยัน (ถ่ายภาพหน้างาน — เหมือนถ่ายรูปตอนส่งพัสดุ)</label>
+            <input type="file" id="e_deathPhotoInput" accept="image/*" capture="environment" onchange="handleDeathPhotoChange(event)">
+            <div id="e_deathPhotoPreviewBox" class="hidden" style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+              <img id="e_deathPhotoPreview" style="max-width:140px; max-height:140px; border:1px solid #ccc; border-radius:6px;">
+              <button type="button" onclick="clearDeathPhoto()">🗑️ ลบรูป</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:8px; font-weight:normal;">
+            <input type="checkbox" id="e_palliativeCare" onchange="updatePalliativeSignatureVisibility()" style="width:18px; height:18px;">
+            รักษาประคับประครองตามอาการ (Palliative/Comfort Care)
+          </label>
+        </div>
+        <div class="field hidden" id="palliativeSignatureBox">
+          <label>ลายเซ็นญาติรับทราบการรักษาแบบประคับประครองตามอาการ</label>
+          <div style="border:1px solid #ccc; border-radius:8px; background:#fff; overflow:hidden;">
+            <canvas id="e_palliativeSigCanvas" width="600" height="180" style="width:100%; height:180px; touch-action:none; display:block; background:#fff;"></canvas>
+          </div>
+          <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+            <button type="button" onclick="clearPalliativeSignature()">🧹 ล้างลายเซ็น</button>
+            <span style="font-size:12px; color:#666;">ให้ญาติเซ็นด้วยนิ้ว/เมาส์ในกรอบด้านบน (เหมือนเซ็นรับพัสดุ)</span>
+          </div>
+          <div class="field"><label>ชื่อ-นามสกุล ญาติผู้เซ็นรับทราบ</label><input type="text" id="e_palliativeSignerName" placeholder="ชื่อ-นามสกุล ญาติ"></div>
+        </div>
+      </div>
+
+      <div class="section lock-when-notfound">
+        <h3>สรุปรายงาน</h3>
+        <div class="field"><label>ผู้สรุปรายงาน</label><select id="e_reportSummarizer"></select></div>
+        <div class="field"><label>ชื่อผู้ประเมิน (เฉพาะ RN)</label><select id="e_evaluatorName"></select></div>
+      </div>
+
+      <div class="section lock-when-notfound">
+        <h3>ผลการรักษา</h3>
+        <div class="chip-group" id="e_outcomeGroup">
+          <button type="button" class="outcome-btn" data-val="D/C" onclick="pickOutcome(this)">D/C</button>
+          <button type="button" class="outcome-btn" data-val="Admit" onclick="pickOutcome(this)">Admit</button>
+          <button type="button" class="outcome-btn" data-val="Refer" onclick="pickOutcome(this)">Refer</button>
+          <button type="button" class="outcome-btn" data-val="Death" onclick="pickOutcome(this)">Death</button>
+        </div>
+        <div class="field hidden" id="e_referBox" style="margin-top:12px;">
+          <label>ส่งต่อโรงพยาบาล</label>
+          <input type="text" id="e_referHospital" value="รพ.นครไทย">
+        </div>
+      </div>
+
+      <div class="edit-banner hidden" id="e_editBanner">
+        <span>✏️ กำลังแก้ไขเคสเดิม — กดปุ่มด้านล่างเพื่อบันทึกการแก้ไข</span>
+        <button type="button" onclick="cancelEditEMS()">ยกเลิก</button>
+      </div>
+      <button class="submit-btn" id="e_submitBtn" onclick="submitEMS()">บันทึกข้อมูล EMS</button>
+    </form>
+  </div>
+
+  <!-- REFER FORM -->
+  <div id="referForm" class="hidden">
+    <div class="topbar">
+      <button class="back-btn" onclick="showHome()">← กลับ</button>
+      <p class="form-title">แบบบันทึก REFER</p>
+    </div>
+    <form id="referFormEl" onsubmit="return false;">
+      <div class="section">
+        <h3>ข้อมูลผู้ป่วย</h3>
+        <div class="field"><label>วันที่</label><input type="date" id="r_date" required></div>
+        <div class="field"><label>ชื่อผู้ป่วย</label><input type="text" id="r_patientName"></div>
+        <div class="row2">
+          <div class="field"><label>HN</label><input type="text" id="r_hn"></div>
+          <div class="field"><label>อายุ (ปี)</label><input type="number" id="r_age"></div>
+        </div>
+        <div class="field"><label>DX</label><textarea id="r_dx"></textarea></div>
+      </div>
+
+      <div class="section">
+        <h3>การส่งต่อ</h3>
+        <div class="field"><label>ส่งต่อโรงพยาบาล</label><select id="r_referHospital"></select></div>
+        <div class="field">
+          <label>ประเภท</label>
+          <div class="chip-group" id="r_traumaGroup">
+            <button type="button" class="chip" data-val="Trauma" onclick="pickChip(this,'r_traumaGroup','referTrauma')">Trauma</button>
+            <button type="button" class="chip" data-val="Non-Trauma" onclick="pickChip(this,'r_traumaGroup','referTrauma')">Non-Trauma</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>โดย (ทีมนำส่ง)</label>
+          <div class="chip-group" id="r_teamGroup">
+            <button type="button" class="chip" data-val="แพทย์+พยาบาล" onclick="pickChip(this,'r_teamGroup','team')">แพทย์+พยาบาล</button>
+            <button type="button" class="chip" data-val="พยาบาล+ผู้ช่วย" onclick="pickChip(this,'r_teamGroup','team')">พยาบาล+ผู้ช่วย</button>
+            <button type="button" class="chip" data-val="พยาบาล" onclick="pickChip(this,'r_teamGroup','team')">พยาบาล</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>ระดับความรุนแรง</label>
+          <div class="chip-group" id="r_sevGroup" style="flex-direction:column; align-items:stretch;">
+            <button type="button" class="sev-btn sev-red" data-val="ระดับวิกฤต (ฉุกเฉินสีแดง)" onclick="pickChip(this,'r_sevGroup','referSeverity')">ระดับวิกฤต (ฉุกเฉินสีแดง)</button>
+            <button type="button" class="sev-btn sev-yellow" data-val="ระดับฉุกเฉิน (ฉุกเฉินสีเหลือง)" onclick="pickChip(this,'r_sevGroup','referSeverity')">ระดับฉุกเฉิน (ฉุกเฉินสีเหลือง)</button>
+            <button type="button" class="sev-btn sev-green" data-val="ระดับเร่งด่วน (ฉุกเฉินสีเขียว)" onclick="pickChip(this,'r_sevGroup','referSeverity')">ระดับเร่งด่วน (ฉุกเฉินสีเขียว)</button>
+            <button type="button" class="sev-btn sev-white" data-val="ระดับไม่เร่งด่วน (ปกติ)" onclick="pickChip(this,'r_sevGroup','referSeverity')">ระดับไม่เร่งด่วน (ปกติ)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-banner hidden" id="r_editBanner">
+        <span>✏️ กำลังแก้ไขเคสเดิม — กดปุ่มด้านล่างเพื่อบันทึกการแก้ไข</span>
+        <button type="button" onclick="cancelEditRefer()">ยกเลิก</button>
+      </div>
+      <button class="submit-btn" id="r_submitBtn" onclick="submitRefer()">บันทึกข้อมูล REFER</button>
+    </form>
+  </div>
+
+</div>
+
+<div class="credit">Miss NutunreeS.</div>
+
+<div class="lc-overlay" id="lcOverlay">
+  <div class="lc-box">
+    <div class="lc-head">
+      <span>📋 สรุปเคส (คัดลอกเพื่อส่ง LINE)</span>
+      <button type="button" class="lc-close" onclick="closeLineCopy()">✕</button>
+    </div>
+    <div class="lc-body">
+      <textarea class="lc-textarea" id="lcText" readonly></textarea>
+    </div>
+    <div class="lc-actions">
+      <button type="button" class="lc-copy-btn" id="lcCopyBtn" onclick="copyLineText()">คัดลอกข้อความ</button>
+      <button type="button" class="lc-later-btn" onclick="closeLineCopy()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var APP_URL = "<?= appUrl ?>";
+  var RN_NAMES = ['ยุทธพล','อรุณี','กนกวรรณ','นิชธาวัลย์','กลศาสตร์','เทอดพงษ์','วิภาลัย','จีระศักดิ์','กัญญา','นภเกตน์','สิริณัฐฐา'];
+  var AEMT_NAMES = ['พัชรพร','จิตรานุช','ณัฎฐ์นรี','วรรณา','ณัฐริกา'];
+  var STAFF_LISTS = {
+    e_rn: RN_NAMES.concat(AEMT_NAMES), // เจ้าหน้าที่ผู้ให้บริการ 1: เลือกได้ทั้ง RN และ AEMT
+    e_aemt: RN_NAMES.concat(AEMT_NAMES), // เจ้าหน้าที่ผู้ให้บริการ 2: เลือกได้ทั้ง RN และ AEMT
+    e_helper: ['กัลยา','ปริญาภรณ์','จินตนา','นภัทธัญธรณ์','นันท์นภัส','อานนท์','ชัยพร'],
+    e_driver: ['สมศักดิ์','รณชิต','นิตินันท์','ฉัตรชัย','ไตรภพ','นุการ','ชยพล'],
+    e_reportSummarizer: RN_NAMES.concat(AEMT_NAMES), // ผู้สรุปรายงาน: เลือกได้ทั้ง RN+AEMT รวม 16 คน
+    e_evaluatorName: RN_NAMES // ชื่อผู้ประเมิน: เลือกได้เฉพาะ RN เท่านั้น
+  };
+  // รายชื่อที่เลือกได้ทั้ง RN และ AEMT ปนกัน (e_rn, e_aemt, e_reportSummarizer) ให้โชว์ (RN)/(AEMT) ต่อท้ายชื่อ
+  // ในตัวเลือกดรอปดาวน์เพื่อให้รู้ว่าใครเป็นตำแหน่งอะไร ส่วนค่าที่บันทึกจริง (value) ยังคงเป็นชื่อเปล่าเหมือนเดิม
+  var STAFF_LISTS_WITH_ROLE = { e_rn: true, e_aemt: true, e_reportSummarizer: true };
+  function staffLabelWithRole_(name){
+    if(RN_NAMES.indexOf(name) !== -1) return name + ' (RN)';
+    if(AEMT_NAMES.indexOf(name) !== -1) return name + ' (AEMT)';
+    return name;
+  }
+  function populateStaffSelects(){
+    Object.keys(STAFF_LISTS).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var showRole = !!STAFF_LISTS_WITH_ROLE[id];
+      var html = '<option value="">-- เลือกชื่อ --</option>';
+      STAFF_LISTS[id].forEach(function(name){
+        var label = showRole ? staffLabelWithRole_(name) : name;
+        html += '<option value="' + name + '">' + label + '</option>';
+      });
+      html += '<option value="__other__">อื่นๆ (พิมพ์เอง)</option>';
+      el.innerHTML = html;
+      el.addEventListener('change', function(){
+        if(el.value === '__other__'){
+          var custom = prompt('พิมพ์ชื่อเจ้าหน้าที่:');
+          if(custom){
+            var opt = document.createElement('option');
+            opt.value = custom; opt.textContent = custom; opt.selected = true;
+            el.insertBefore(opt, el.lastElementChild);
+          } else {
+            el.value = '';
+          }
+        }
+      });
+    });
+  }
+  populateStaffSelects();
+  var REFER_HOSPITALS = ['รพ.พุทธชินราช','รพ.มหาวิทยาลัยนเรศวร','รพ.ค่ายสมเด็จพระนเรศวรมหาราช','รพ.จิตเวชพิษณุโลก','รพ.ชาติตระการ','รพ.เนินมะปราง','รพ.บางกระทุ่ม','รพ.บางระกำ','รพ.พรหมพิราม','รพ.วังทอง','รพ.วัดโบสถ์'];
+  function populateReferHospitalSelect(){
+    var el = document.getElementById('r_referHospital');
+    if(!el) return;
+    var html = '<option value="">-- เลือกโรงพยาบาล --</option>';
+    REFER_HOSPITALS.forEach(function(name){ html += '<option value="' + name + '">' + name + '</option>'; });
+    html += '<option value="__other__">อื่นๆ (พิมพ์เอง)</option>';
+    el.innerHTML = html;
+    el.addEventListener('change', function(){
+      if(el.value === '__other__'){
+        var custom = prompt('พิมพ์ชื่อโรงพยาบาล:');
+        if(custom){
+          var opt = document.createElement('option');
+          opt.value = custom; opt.textContent = custom; opt.selected = true;
+          el.insertBefore(opt, el.lastElementChild);
+        } else {
+          el.value = '';
+        }
+      }
+    });
+  }
+  function setReferHospitalValue(name){
+    var el = document.getElementById('r_referHospital');
+    if(!el || !name) return;
+    var found = false;
+    for(var i=0;i<el.options.length;i++){ if(el.options[i].value === name){ found = true; break; } }
+    if(!found){
+      var opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      el.insertBefore(opt, el.lastElementChild);
+    }
+    el.value = name;
+  }
+  populateReferHospitalSelect();
+  function setStaffSelectValue(id, name){
+    var el = document.getElementById(id);
+    if(!el) return;
+    name = name || '';
+    if(name && !el.querySelector('option[value="' + name.replace(/"/g,'') + '"]')){
+      var opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      el.insertBefore(opt, el.lastElementChild);
+    }
+    el.value = name;
+  }
+  var selected = {
+    severity:null, trauma:null, outcome:null, team:null, referSeverity:null,
+    shift:null, receivedFrom:null, incidentType:null, found:null,
+    initialCare:null, nationality:null, rights:null
+  };
+  var currentStaffId = null;
+  var emsEditingId = null;
+  var referEditingId = null;
+  function syncLoginPw(v){
+    document.getElementById('loginPw').value = v.toUpperCase();
+  }
+
+  function showLogin(){
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('emsForm').classList.add('hidden');
+    document.getElementById('referForm').classList.add('hidden');
+    document.getElementById('sessionBar').classList.add('hidden');
+  }
+
+  function doLogin(){
+    var id = document.getElementById('loginId').value.trim();
+    var pw = document.getElementById('loginPw').value.trim();
+    var errBox = document.getElementById('loginError');
+    errBox.classList.add('hidden');
+    var btn = document.getElementById('loginBtn');
+    btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
+    google.script.run
+      .withSuccessHandler(function(res){
+        btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+        if(res.ok){
+          currentStaffId = res.id;
+          document.getElementById('sessionStaffId').textContent = currentStaffId;
+          document.getElementById('loginId').value = '';
+          document.getElementById('loginPw').value = '';
+          try{ localStorage.setItem('nkt_staffId', currentStaffId); }catch(e){}
+          showHome();
+        } else {
+          errBox.textContent = res.message || 'เข้าสู่ระบบไม่สำเร็จ';
+          errBox.classList.remove('hidden');
+        }
+      })
+      .withFailureHandler(function(err){
+        btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+        errBox.textContent = 'เกิดข้อผิดพลาด: ' + err.message;
+        errBox.classList.remove('hidden');
+      })
+      .login(id, pw);
+  }
+
+  function doLogout(){
+    if(currentStaffId){ google.script.run.logout(currentStaffId); }
+    currentStaffId = null;
+    try{ localStorage.removeItem('nkt_staffId'); }catch(e){}
+    showLogin();
+  }
+
+  function tryAutoLogin(){
+    var saved = null;
+    try{ saved = localStorage.getItem('nkt_staffId'); }catch(e){}
+    if(saved){
+      currentStaffId = saved;
+      document.getElementById('sessionStaffId').textContent = currentStaffId;
+      showHome();
+    }
+  }
+
+
+  function showHome(){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('sessionBar').classList.remove('hidden');
+    document.getElementById('home').classList.remove('hidden');
+    document.getElementById('emsForm').classList.add('hidden');
+    document.getElementById('referForm').classList.add('hidden');
+    emsEditingId = null;
+    document.getElementById('e_editBanner').classList.add('hidden');
+    document.getElementById('e_submitBtn').textContent = 'บันทึกข้อมูล EMS';
+    referEditingId = null;
+    document.getElementById('r_editBanner').classList.add('hidden');
+    document.getElementById('r_submitBtn').textContent = 'บันทึกข้อมูล REFER';
+    loadEMSList();
+    loadReferList();
+  }
+  function showEMS(){
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('emsForm').classList.remove('hidden');
+    document.getElementById('referForm').classList.add('hidden');
+    ensureToday('e_date');
+    restoreEMSDraft();
+    updateSeqPreview();
+    updateTimeCalc();
+  }
+
+  var EMS_CHIP_GROUPS = [
+    {group:'e_shiftGroup', key:'shift'},
+    {group:'e_receivedFromGroup', key:'receivedFrom'},
+    {group:'e_incidentTypeGroup', key:'incidentType'},
+    {group:'e_severityGroup', key:'severity'},
+    {group:'e_traumaGroup', key:'trauma'},
+    {group:'e_foundGroup', key:'found'},
+    {group:'e_outcomeGroup', key:'outcome'},
+    {group:'e_initialCareGroup', key:'initialCare'},
+    {group:'e_nationalityGroup', key:'nationality'},
+    {group:'e_rightsGroup', key:'rights'}
+  ];
+
+  var MULTI_CHIP_GROUPS = {
+    e_wound: ['No','Cut/Laceration','Abrasion','Contusion','Burn','Stab Wound','Amputate','GSW'],
+    e_deform: ['No','Closed','Opened','Dislocate'],
+    e_bleed: ['No','Ext/Stopped','Ext/Active','Int. Hemorrhage'],
+    e_organ: ['Head/neck','Face','Spine/back','Chest/Clavicle','Abdomen','Pelvis','Extremities','External body surface','Multiple injury'],
+    e_medical: ['Dyspnea','High Fever','Alteration of conscious','Seizure','Chest pain','Poisoning','Digestive','Other'],
+    e_obgyn: ['Labour pain/child birth','Bleeding per Vagina','High risk preg','Rape','Other'],
+    e_peds: ['Convulsion','High Fever','Dyspnea','Digestive','Other'],
+    e_surgical: ['Ac. abdominal pain','GI Bleeding','Other'],
+    e_otherNT: ['Eye','ENT','Ortho','Psychological problem'],
+    e_airway: ['No','Clear airway','Suction','Oral airway','O2 canula/mask','Ambu bag','ET'],
+    e_woundCare: ['No','Pressure Dressing','Dressing'],
+    e_fluid: ['No','NSS','RLS','5%DN/2','On locked','Others'],
+    e_splint: ['No','เฝือกลม/ไม้ดาม/Sling','Collar with Long Spinal Board','เฝือกหลังและคอ (KED)'],
+    e_cpr: ['No','Yes','AED/Defib']
+  };
+  // ตัวเลือกที่ขึ้นต้นด้วย "Other"/"Others" (ไม่สนตัวพิมพ์เล็ก-ใหญ่) จะมีช่องพิมพ์ข้อความกำกับ
+  // เมื่อติ๊กเลือก จะโผล่ช่องให้พิมพ์รายละเอียด แล้วเก็บเป็น "Other: ข้อความ" ไปกับข้อมูลที่บันทึก
+  function isOtherOpt_(v){ return /^others?\b/i.test(String(v || '').trim()); }
+
+  function renderMultiChipGroups(){
+    Object.keys(MULTI_CHIP_GROUPS).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var html = '';
+      var hasOther = false;
+      MULTI_CHIP_GROUPS[id].forEach(function(opt){
+        if(isOtherOpt_(opt)) hasOther = true;
+        html += '<button type="button" class="chip" data-val="' + opt + '" onclick="toggleMultiChip(this)">' + opt + '</button>';
+      });
+      el.innerHTML = html;
+      if(hasOther && !document.getElementById(id + '_otherText')){
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = id + '_otherText';
+        inp.className = 'other-text-input hidden';
+        inp.placeholder = 'ระบุรายละเอียด...';
+        inp.addEventListener('input', saveEMSDraft);
+        el.parentNode.appendChild(inp);
+      }
+    });
+  }
+  function toggleMultiChip(btn){
+    btn.classList.toggle('active');
+    var dataVal = btn.getAttribute('data-val');
+    if(isOtherOpt_(dataVal)){
+      var groupId = btn.parentNode.id;
+      var inp = document.getElementById(groupId + '_otherText');
+      if(inp){
+        if(btn.classList.contains('active')){ inp.classList.remove('hidden'); inp.focus(); }
+        else { inp.classList.add('hidden'); inp.value = ''; }
+      }
+    }
+    saveEMSDraft();
+  }
+  function getMultiChipCSV(id){
+    var vals = [];
+    document.querySelectorAll('#' + id + ' .chip.active').forEach(function(b){
+      var v = b.getAttribute('data-val');
+      if(isOtherOpt_(v)){
+        var inp = document.getElementById(id + '_otherText');
+        var t = inp ? inp.value.trim() : '';
+        vals.push(t ? (v + ': ' + t) : v);
+      } else {
+        vals.push(v);
+      }
+    });
+    return vals.join(', ');
+  }
+  function setMultiChipCSV(id, csv){
+    var vals = String(csv || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    var otherInput = document.getElementById(id + '_otherText');
+    var otherActive = false, otherText = '';
+    document.querySelectorAll('#' + id + ' .chip').forEach(function(b){
+      var dataVal = b.getAttribute('data-val');
+      var isOther = isOtherOpt_(dataVal);
+      var matched = vals.some(function(v){
+        if(isOther){ return v === dataVal || v.indexOf(dataVal + ':') === 0; }
+        return v === dataVal;
+      });
+      if(isOther && matched){
+        otherActive = true;
+        vals.forEach(function(v){
+          if(v.indexOf(dataVal + ':') === 0){ otherText = v.substring(dataVal.length + 1).trim(); }
+        });
+      }
+      b.classList.toggle('active', matched);
+    });
+    if(otherInput){
+      if(otherActive){ otherInput.classList.remove('hidden'); otherInput.value = otherText; }
+      else { otherInput.classList.add('hidden'); otherInput.value = ''; }
+    }
+  }
+  renderMultiChipGroups();
+
+  function saveEMSDraft(){
+    try{
+      var fields = {};
+      document.querySelectorAll('#emsFormEl input[id], #emsFormEl textarea[id], #emsFormEl select[id]').forEach(function(el){
+        fields[el.id] = el.value;
+      });
+      var chips = {};
+      EMS_CHIP_GROUPS.forEach(function(g){ chips[g.key] = selected[g.key] || null; });
+      var multiChips = {};
+      Object.keys(MULTI_CHIP_GROUPS).forEach(function(id){ multiChips[id] = getMultiChipCSV(id); });
+      localStorage.setItem('nkt_ems_draft', JSON.stringify({fields: fields, chips: chips, multiChips: multiChips}));
+    }catch(e){}
+  }
+
+  function restoreEMSDraft(){
+    try{
+      var raw = localStorage.getItem('nkt_ems_draft');
+      if(!raw) return;
+      var draft = JSON.parse(raw);
+      if(draft.fields){
+        Object.keys(draft.fields).forEach(function(id){
+          var el = document.getElementById(id);
+          if(el && !el.value){ el.value = draft.fields[id]; }
+        });
+      }
+      if(draft.chips){
+        EMS_CHIP_GROUPS.forEach(function(g){
+          var v = draft.chips[g.key];
+          if(!v) return;
+          document.querySelectorAll('#'+g.group+' button').forEach(function(b){
+            if(b.getAttribute('data-val') === v){ b.classList.add('active'); }
+          });
+          selected[g.key] = v;
+          if(g.key === 'outcome' && v === 'Refer'){
+            document.getElementById('e_referBox').classList.remove('hidden');
+          }
+          if(g.key === 'trauma'){ updateTraumaVisibility(); }
+          if(g.key === 'initialCare'){ updateDeathSignatureVisibility(); }
+          if(g.key === 'nationality'){ updateNationalityDetailVisibility(); }
+          if(g.key === 'found'){ applyFoundLock(); }
+        });
+      }
+      if(draft.multiChips){
+        Object.keys(draft.multiChips).forEach(function(id){
+          setMultiChipCSV(id, draft.multiChips[id]);
+        });
+      }
+      calcTotalKm();
+      calcGCS();
+      updateTimeCalc();
+    }catch(e){}
+  }
+
+  function clearEMSDraft(){
+    try{ localStorage.removeItem('nkt_ems_draft'); }catch(e){}
+  }
+  function showRefer(){
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('emsForm').classList.add('hidden');
+    document.getElementById('referForm').classList.remove('hidden');
+    ensureToday('r_date');
+  }
+
+  function ensureToday(id){
+    var el = document.getElementById(id);
+    if(!el.value){
+      google.script.run.withSuccessHandler(function(t){
+        // เช็คซ้ำตอนได้รับผลลัพธ์ (async) เผื่อระหว่างนี้มีโค้ดอื่น (เช่น ตอนกดแก้ไขเคสเดิม) ใส่ค่าจริงไปแล้ว
+        // ป้องกันปัญหาวันที่เคสเดิมถูกเขียนทับกลายเป็นวันที่ปัจจุบันตอนเปิดมาแก้ไข
+        if(!el.value){
+          el.value = t.date;
+          if(id === 'e_date'){ updateSeqPreview(); }
+        }
+      }).getServerTime();
+    }
+  }
+
+  // ===== ลำดับผู้ป่วย (CN) ฟิกไว้เลยเป็น "เหตุที่ N" ของวันนั้นๆ คำนวณจากระบบเสมอ ห้ามพิมพ์เอง =====
+  function updateSeqPreview(){
+    if(emsEditingId) return; // เคสเดิมที่แก้ไข ให้คงเลขลำดับเดิมไว้ ไม่คำนวณใหม่
+    var d = val('e_date');
+    if(!d) return;
+    google.script.run.withSuccessHandler(function(n){
+      document.getElementById('e_seq').value = n;
+    }).previewNextSeq(d);
+  }
+
+  // ===== คำนวณ Response time / Hospital Time อัตโนมัติจากเวลาที่กรอก (โชว์ให้เห็นทันทีตอนกรอกฟอร์ม) =====
+  function parseHMLocal_(v){
+    if(!v) return null;
+    var parts = String(v).split(':');
+    if(parts.length < 2) return null;
+    var h = parseInt(parts[0],10), m = parseInt(parts[1],10);
+    if(isNaN(h) || isNaN(m)) return null;
+    return h*60 + m;
+  }
+  function minDiffLocal_(from, to){
+    var m1 = parseHMLocal_(from), m2 = parseHMLocal_(to);
+    if(m1 === null || m2 === null) return null;
+    var diff = m2 - m1;
+    if(diff < 0) diff += 24*60; // ข้ามเที่ยงคืน
+    return diff;
+  }
+  function updateTimeCalc(){
+    var rt = minDiffLocal_(val('e_tReceived'), val('e_tArriveScene'));
+    var ht = minDiffLocal_(val('e_tDepartScene'), val('e_tArriveHospital'));
+    document.getElementById('e_responseTime').textContent = (rt === null) ? '-' : rt;
+    document.getElementById('e_hospitalTime').textContent = (ht === null) ? '-' : ht;
+  }
+
+  function setNow(id){
+    google.script.run.withSuccessHandler(function(t){
+      document.getElementById(id).value = t.time;
+    }).getServerTime();
+  }
+
+  function pickSeverity(btn){
+    document.querySelectorAll('#e_severityGroup .sev-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    selected.severity = btn.getAttribute('data-val');
+    saveEMSDraft();
+  }
+
+  function pickChip(btn, groupId, key){
+    document.querySelectorAll('#'+groupId+' .chip, #'+groupId+' .sev-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    selected[key] = btn.getAttribute('data-val');
+    saveEMSDraft();
+    if(key === 'trauma'){ updateTraumaVisibility(); }
+    if(key === 'initialCare'){ updateDeathSignatureVisibility(); }
+    if(key === 'found'){ applyFoundLock(); }
+  }
+
+  // ===== สัญชาติ/ประเภทผู้ป่วย: ติ๊ก "คนไทย" อัตโนมัติเมื่อกรอกเลข ID (ถ้ายังไม่ได้เลือกสัญชาติอื่นเอง) =====
+  function onPatientIdInput(){
+    var idVal = val('e_patientId');
+    if(idVal && !selected.nationality){
+      var btn = document.querySelector('#e_nationalityGroup .chip[data-val="คนไทย"]');
+      if(btn){ pickChip(btn, 'e_nationalityGroup', 'nationality'); updateNationalityDetailVisibility(); }
+    }
+    saveEMSDraft();
+  }
+
+  function updateNationalityDetailVisibility(){
+    var box = document.getElementById('e_nationalityDetailBox');
+    if(!box) return;
+    if(selected.nationality === 'แรงงานต่างด้าว' || selected.nationality === 'ชาวต่างชาติ'){
+      box.classList.remove('hidden');
+    } else {
+      box.classList.add('hidden');
+      document.getElementById('e_nationalityDetail').value = '';
+    }
+  }
+
+  // ===== ชุด Vital Signs เพิ่มเติม (ประเมินซ้ำได้หลายครั้ง) =====
+  var vitalExtraCount = 0;
+  function addVitalExtra(prefill){
+    vitalExtraCount++;
+    var idx = vitalExtraCount;
+    var wrap = document.createElement('div');
+    wrap.className = 'vital-extra-block';
+    wrap.id = 've_' + idx;
+    wrap.style.cssText = 'border:1px dashed #999; border-radius:8px; padding:8px; margin-top:8px;';
+    wrap.innerHTML =
+      '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+        '<strong>Vital Signs (ประเมินซ้ำ #' + idx + ')</strong>' +
+        '<button type="button" onclick="removeVitalExtra(' + idx + ')">🗑️ ลบชุดนี้</button>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>เวลา</label><input type="time" id="ve_time_' + idx + '"></div>' +
+        '<div class="field"><label>BP (mmHg)</label><input type="text" id="ve_bp_' + idx + '" placeholder="เช่น 120/80"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>PR (bpm)</label><input type="number" id="ve_pr_' + idx + '"></div>' +
+        '<div class="field"><label>RR (bpm)</label><input type="number" id="ve_rr_' + idx + '"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>BT (°C)</label><input type="number" step="0.1" id="ve_bt_' + idx + '"></div>' +
+        '<div class="field"><label>O2sat (%)</label><input type="number" id="ve_o2sat_' + idx + '"></div>' +
+      '</div>' +
+      '<div class="row3">' +
+        '<input type="number" min="1" max="4" id="ve_gcsE_' + idx + '" placeholder="E">' +
+        '<input type="number" min="1" max="5" id="ve_gcsV_' + idx + '" placeholder="V">' +
+        '<input type="number" min="1" max="6" id="ve_gcsM_' + idx + '" placeholder="M">' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Pupil ซ้าย (Lt)</label><input type="text" id="ve_pupilL_' + idx + '"></div>' +
+        '<div class="field"><label>Pupil ขวา (Rt)</label><input type="text" id="ve_pupilR_' + idx + '"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>DTX (mg%)</label><input type="number" id="ve_dtx_' + idx + '"></div>' +
+      '</div>';
+    document.getElementById('e_vitalExtraContainer').appendChild(wrap);
+    if(prefill){
+      document.getElementById('ve_time_' + idx).value = prefill.time || '';
+      document.getElementById('ve_bp_' + idx).value = prefill.bp || '';
+      document.getElementById('ve_pr_' + idx).value = prefill.pr || '';
+      document.getElementById('ve_rr_' + idx).value = prefill.rr || '';
+      document.getElementById('ve_bt_' + idx).value = prefill.bt || '';
+      document.getElementById('ve_o2sat_' + idx).value = prefill.o2sat || '';
+      document.getElementById('ve_gcsE_' + idx).value = prefill.gcsE || '';
+      document.getElementById('ve_gcsV_' + idx).value = prefill.gcsV || '';
+      document.getElementById('ve_gcsM_' + idx).value = prefill.gcsM || '';
+      document.getElementById('ve_pupilL_' + idx).value = prefill.pupilL || '';
+      document.getElementById('ve_pupilR_' + idx).value = prefill.pupilR || '';
+      document.getElementById('ve_dtx_' + idx).value = prefill.dtx || '';
+    }
+    saveEMSDraft();
+  }
+  function removeVitalExtra(idx){
+    var el = document.getElementById('ve_' + idx);
+    if(el){ el.parentNode.removeChild(el); }
+    saveEMSDraft();
+  }
+  function clearVitalExtra(){
+    document.getElementById('e_vitalExtraContainer').innerHTML = '';
+    vitalExtraCount = 0;
+  }
+  function getVitalExtraList(){
+    var list = [];
+    document.querySelectorAll('.vital-extra-block').forEach(function(block){
+      var idx = block.id.replace('ve_', '');
+      list.push({
+        time: val('ve_time_' + idx), bp: val('ve_bp_' + idx), pr: val('ve_pr_' + idx),
+        rr: val('ve_rr_' + idx), bt: val('ve_bt_' + idx), o2sat: val('ve_o2sat_' + idx),
+        gcsE: val('ve_gcsE_' + idx), gcsV: val('ve_gcsV_' + idx), gcsM: val('ve_gcsM_' + idx),
+        pupilL: val('ve_pupilL_' + idx), pupilR: val('ve_pupilR_' + idx), dtx: val('ve_dtx_' + idx)
+      });
+    });
+    return list;
+  }
+
+  // ===== เมื่อเลือก "ไม่พบเหตุ" กรอกได้เฉพาะข้อ 1-2 (ข้อมูลทั่วไป/เหตุการณ์/เวลา/เลขไมล์) =====
+  // ส่วนข้อมูลผู้ป่วย, Vital Signs, Trauma/Non-Trauma, การช่วยเหลือ, สรุปรายงาน, ผลการรักษา จะถูกล็อกทั้งหมด
+  function applyFoundLock(){
+    var isNotFound = selected.found === 'ไม่พบเหตุ';
+    var form = document.getElementById('emsFormEl');
+    if(!form) return;
+    var lockSections = form.querySelectorAll('.section.lock-when-notfound');
+    lockSections.forEach(function(sec){
+      var controls = sec.querySelectorAll('input, textarea, select, button');
+      controls.forEach(function(el){ el.disabled = isNotFound; });
+      sec.style.opacity = isNotFound ? '0.4' : '';
+      sec.style.pointerEvents = isNotFound ? 'none' : '';
+    });
+    var submitBtn = document.getElementById('e_submitBtn');
+    if(submitBtn){ submitBtn.disabled = false; }
+  }
+
+  function updateTraumaVisibility(){
+    var v = selected.trauma;
+    var traumaSec = document.getElementById('traumaDetailSection');
+    var nonSec = document.getElementById('nonTraumaDetailSection');
+    if(!traumaSec || !nonSec) return;
+    if(v === 'Trauma'){
+      traumaSec.classList.remove('hidden'); nonSec.classList.add('hidden');
+    } else if(v === 'Non-Trauma'){
+      traumaSec.classList.add('hidden'); nonSec.classList.remove('hidden');
+    } else {
+      traumaSec.classList.add('hidden'); nonSec.classList.add('hidden');
+    }
+  }
+
+  function updateDeathSignatureVisibility(){
+    var box = document.getElementById('deathSignatureBox');
+    if(!box) return;
+    if(selected.initialCare === 'เสียชีวิต ณ จุดเกิดเหตุ'){ box.classList.remove('hidden'); }
+    else { box.classList.add('hidden'); clearDeathSignature(); clearDeathPhoto(); }
+  }
+
+  // ===== รูปถ่ายยืนยัน (กรณีเสียชีวิต ณ จุดเกิดเหตุ) - เหมือนถ่ายรูปตอนส่งพัสดุ =====
+  var deathPhotoDataUrl = '';
+  function handleDeathPhotoChange(evt){
+    var file = evt.target.files && evt.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        // ย่อรูปให้ไม่ใหญ่เกินไปก่อนอัปโหลด (กว้างไม่เกิน 900px, คุณภาพ 70%)
+        var maxW = 900;
+        var scale = Math.min(1, maxW / img.width);
+        var w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        deathPhotoDataUrl = c.toDataURL('image/jpeg', 0.7);
+        var prev = document.getElementById('e_deathPhotoPreview');
+        prev.src = deathPhotoDataUrl;
+        document.getElementById('e_deathPhotoPreviewBox').classList.remove('hidden');
+        saveEMSDraft();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  function clearDeathPhoto(){
+    deathPhotoDataUrl = '';
+    document.getElementById('e_deathPhotoInput').value = '';
+    document.getElementById('e_deathPhotoPreviewBox').classList.add('hidden');
+  }
+  function loadDeathPhotoPreview(urlOrDataUrl){
+    if(!urlOrDataUrl){ clearDeathPhoto(); return; }
+    deathPhotoDataUrl = urlOrDataUrl;
+    document.getElementById('e_deathPhotoPreview').src = urlOrDataUrl;
+    document.getElementById('e_deathPhotoPreviewBox').classList.remove('hidden');
+  }
+
+  // ===== ลายเซ็นญาติ (ใช้ร่วมกันได้หลายจุด: เสียชีวิต ณ จุดเกิดเหตุ / รักษาประคับประครองตามอาการ) =====
+  function createSignaturePad(canvasId){
+    var canvas = document.getElementById(canvasId);
+    var ctx = null, drawing = false, hasContent = false, lastX = 0, lastY = 0;
+    if(canvas){
+      ctx = canvas.getContext('2d');
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#111';
+      var pos = function(evt){
+        var rect = canvas.getBoundingClientRect();
+        var cx = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        var cy = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        var scaleX = canvas.width / rect.width;
+        var scaleY = canvas.height / rect.height;
+        return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
+      };
+      var start = function(evt){ drawing = true; hasContent = true; var p = pos(evt); lastX = p.x; lastY = p.y; evt.preventDefault(); };
+      var move = function(evt){
+        if(!drawing) return;
+        var p = pos(evt);
+        ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+        lastX = p.x; lastY = p.y;
+        evt.preventDefault();
+      };
+      var end = function(){ drawing = false; };
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+      canvas.addEventListener('touchstart', start, {passive:false});
+      canvas.addEventListener('touchmove', move, {passive:false});
+      canvas.addEventListener('touchend', end);
+    }
+    return {
+      clear: function(){ if(ctx && canvas){ ctx.clearRect(0, 0, canvas.width, canvas.height); hasContent = false; } },
+      getDataUrl: function(){ return (canvas && hasContent) ? canvas.toDataURL('image/png') : ''; },
+      load: function(dataUrl){
+        var self = this;
+        if(!dataUrl || !ctx || !canvas){ self.clear(); return; }
+        var img = new Image();
+        img.onload = function(){
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          hasContent = true;
+        };
+        img.src = dataUrl;
+      }
+    };
+  }
+  var deathSigPad = createSignaturePad('e_deathSigCanvas');
+  var palliativeSigPad = createSignaturePad('e_palliativeSigCanvas');
+  function clearDeathSignature(){ deathSigPad.clear(); }
+  function getDeathSignatureDataUrl(){ return deathSigPad.getDataUrl(); }
+  function loadDeathSignatureImage(dataUrl){ deathSigPad.load(dataUrl); }
+  function clearPalliativeSignature(){ palliativeSigPad.clear(); }
+  function getPalliativeSignatureDataUrl(){ return palliativeSigPad.getDataUrl(); }
+  function loadPalliativeSignatureImage(dataUrl){ palliativeSigPad.load(dataUrl); }
+
+  function updatePalliativeSignatureVisibility(){
+    var box = document.getElementById('palliativeSignatureBox');
+    if(!box) return;
+    if(document.getElementById('e_palliativeCare').checked){ box.classList.remove('hidden'); }
+    else { box.classList.add('hidden'); clearPalliativeSignature(); document.getElementById('e_palliativeSignerName').value = ''; }
+  }
+
+  function pickOutcome(btn){
+    document.querySelectorAll('#e_outcomeGroup .outcome-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    selected.outcome = btn.getAttribute('data-val');
+    saveEMSDraft();
+    var box = document.getElementById('e_referBox');
+    if(selected.outcome === 'Refer'){ box.classList.remove('hidden'); } else { box.classList.add('hidden'); }
+  }
+
+  function calcTotalKm(){
+    var out = parseFloat(document.getElementById('e_mileOut').value);
+    var station = parseFloat(document.getElementById('e_mileStation').value);
+    var total = 0;
+    if(!isNaN(out) && !isNaN(station)){ total = station - out; }
+    document.getElementById('e_totalKm').textContent = isNaN(total) ? 0 : Math.round(total*100)/100;
+  }
+
+  function calcGCS(){
+    var e = parseInt(document.getElementById('e_gcsE').value) || 0;
+    var v = parseInt(document.getElementById('e_gcsV').value) || 0;
+    var m = parseInt(document.getElementById('e_gcsM').value) || 0;
+    document.getElementById('e_gcsTotal').textContent = e+v+m;
+  }
+
+  function val(id){ return document.getElementById(id).value; }
+
+  function toast(msg, isErr){
+    var t = document.createElement('div');
+    t.className = 'toast' + (isErr ? ' err' : '');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3200);
+  }
+
+  function buildEMSLineText(d){
+    var lines = [];
+    lines.push('เบอร์ผู้แจ้ง: ' + (d.callerPhone || '-'));
+    lines.push('ระดับความรุนแรง: ' + (d.severity || '-') + ' | ประเภท: ' + (d.traumaType || '-'));
+    lines.push('เวลารับแจ้ง: ' + (d.tReceived || '-') + ' สั่งการ: ' + (d.tDispatch || '-') +
+      ' ออกจากฐาน: ' + (d.tDepartStation || '-') + ' ถึงที่เกิดเหตุ: ' + (d.tArriveScene || '-') +
+      ' ออกจากที่เกิดเหตุ: ' + (d.tDepartScene || '-') + ' ถึงรพ: ' + (d.tArriveHospital || '-') +
+      ' ถึงฐาน: ' + (d.tArriveStation || '-'));
+    lines.push('เลขไมล์: ออก:' + (d.mileOut || '-') + ' ถึงเหตุ:' + (d.mileScene || '-') +
+      ' ถึงรพ:' + (d.mileHospital || '-') + ' ถึงฐาน:' + (d.mileStation || '-') +
+      ' | รวม: ' + (d.totalKm || '0') + ' km');
+    lines.push('ผู้ป่วย: ' + (d.patientName || '-') + ' อายุ ' + (d.age || '-') + ' ปี');
+    lines.push('ID: ' + (d.patientId || '-') + ' HN: ' + (d.hn || '-'));
+    lines.push('ที่อยู่: ' + (d.address || '-'));
+    lines.push('อาการ: ' + (d.symptoms || '-'));
+    lines.push('Dx: ' + (d.dx || '-'));
+    lines.push('Vital Signs: BP ' + (d.bp || '-') + ' mmHg, PR ' + (d.pr || '-') + ' bpm, RR ' +
+      (d.rr || '-') + ' bpm, BT ' + (d.bt || '-') + ' °C, O2sat ' + (d.o2sat || '-') + '%');
+    lines.push('GCS: E' + (d.gcsE || '-') + ' V' + (d.gcsV || '-') + ' M' + (d.gcsM || '-') +
+      ' = ' + (d.gcsTotal || '0') + ' | Pupil ซ้าย: ' + (d.pupilL || '-') + ' ขวา: ' + (d.pupilR || '-') + ' | DTX: ' + (d.dtx || '-') + ' mg%');
+    lines.push('Treatment: ' + (d.treatment || '-'));
+    lines.push('ผลการรักษา: ' + (d.outcome || '-'));
+    if(d.outcome === 'Refer'){
+      lines.push('ส่งต่อ: ' + (d.referHospital || '-'));
+    }
+    return lines.join('\n');
+  }
+
+  function showLineCopy(text){
+    document.getElementById('lcText').value = text;
+    document.getElementById('lcCopyBtn').textContent = 'คัดลอกข้อความ';
+    document.getElementById('lcOverlay').classList.add('show');
+  }
+
+  function closeLineCopy(){
+    document.getElementById('lcOverlay').classList.remove('show');
+  }
+
+  function copyLineText(){
+    var ta = document.getElementById('lcText');
+    var btn = document.getElementById('lcCopyBtn');
+    function done(ok){
+      btn.textContent = ok ? 'คัดลอกแล้ว ✓' : 'คัดลอกไม่สำเร็จ ลองแตะค้างที่ข้อความ';
+      setTimeout(function(){ btn.textContent = 'คัดลอกข้อความ'; }, 2000);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(function(){ done(true); }).catch(function(){
+        ta.focus(); ta.select();
+        try{ done(document.execCommand('copy')); }catch(e){ done(false); }
+      });
+    } else {
+      ta.focus(); ta.select();
+      try{ done(document.execCommand('copy')); }catch(e){ done(false); }
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+
+  function setChipActive(groupId, val){
+    document.querySelectorAll('#'+groupId+' button').forEach(function(b){
+      b.classList.toggle('active', !!val && b.getAttribute('data-val') === val);
+    });
+  }
+
+  // ===== รายการเคส EMS (ดู/แก้ไข/ลบ) =====
+
+  function loadEMSList(){
+    var fromEl = document.getElementById('e_listFrom');
+    var toEl = document.getElementById('e_listTo');
+    if(!fromEl.value || !toEl.value){
+      google.script.run.withSuccessHandler(function(t){
+        if(!fromEl.value) fromEl.value = t.date;
+        if(!toEl.value) toEl.value = t.date;
+        loadEMSList();
+      }).getServerTime();
+      return;
+    }
+    document.getElementById('e_listBox').innerHTML = '<div class="record-empty">กำลังโหลด...</div>';
+    google.script.run
+      .withSuccessHandler(renderEMSList)
+      .withFailureHandler(function(err){
+        document.getElementById('e_listBox').innerHTML = '<div class="record-empty">โหลดไม่สำเร็จ: ' + escapeHtml(err.message) + '</div>';
+      })
+      .getEMSList(fromEl.value, toEl.value);
+  }
+
+  function renderEMSList(list){
+    var box = document.getElementById('e_listBox');
+    box.innerHTML = '';
+    if(!list || list.length === 0){
+      box.innerHTML = '<div class="record-empty">ไม่พบเคสในช่วงวันที่ที่เลือก</div>';
+      return;
+    }
+    list.forEach(function(item, idx){
+      var r = item.row;
+      var card = document.createElement('div');
+      card.className = 'record-card';
+      card.innerHTML =
+        '<div class="rc-top"><span><span style="display:inline-block; min-width:22px; font-weight:700; color:var(--hivis-dark);">' + (idx + 1) + '.</span> ' + escapeHtml(r[28] || '(ไม่ระบุชื่อ)') + '</span><span>' + escapeHtml(r[1] || '-') + '</span></div>' +
+        '<div class="rc-sub">ระดับ: ' + escapeHtml(r[13] || '-') + ' | ผลการรักษา: ' + escapeHtml(r[47] || '-') + ' | ผู้บันทึก: ' + escapeHtml(r[49] || '-') + '</div>' +
+        '<div class="rc-actions">' +
+          '<button type="button" class="rc-edit-btn">แก้ไข</button>' +
+          '<button type="button" class="rc-pdf-btn">พิมพ์ ALS</button>' +
+          '<button type="button" class="rc-del-btn">ลบ</button>' +
+        '</div>';
+      card.querySelector('.rc-edit-btn').onclick = function(){ editEMSRow(item.id, r); };
+      card.querySelector('.rc-pdf-btn').onclick = function(){ openALSForm(item.id); };
+      card.querySelector('.rc-del-btn').onclick = function(){ deleteEMSRow(item.id); };
+      box.appendChild(card);
+    });
+  }
+
+  function fillEMSForm(row){
+    document.getElementById('e_date').value = row[1] || '';
+    document.getElementById('e_seq').value = row[3] || '';
+    document.getElementById('e_opNo').value = row[4] || '';
+    setStaffSelectValue('e_rn', row[5]);
+    setStaffSelectValue('e_aemt', row[6]);
+    setStaffSelectValue('e_driver', row[7]);
+    setStaffSelectValue('e_helper', row[50]);
+    document.getElementById('e_incident').value = row[10] || '';
+    document.getElementById('e_location').value = row[11] || '';
+    document.getElementById('e_callerPhone').value = row[12] || '';
+    document.getElementById('e_tReceived').value = row[16] || '';
+    document.getElementById('e_tDispatch').value = row[17] || '';
+    document.getElementById('e_tDepartStation').value = row[18] || '';
+    document.getElementById('e_tArriveScene').value = row[19] || '';
+    document.getElementById('e_tDepartScene').value = row[20] || '';
+    document.getElementById('e_tArriveHospital').value = row[21] || '';
+    document.getElementById('e_tArriveStation').value = row[22] || '';
+    document.getElementById('e_mileOut').value = row[23] || '';
+    document.getElementById('e_mileScene').value = row[24] || '';
+    document.getElementById('e_mileHospital').value = row[25] || '';
+    document.getElementById('e_mileStation').value = row[26] || '';
+    document.getElementById('e_patientName').value = row[28] || '';
+    document.getElementById('e_age').value = row[29] || '';
+    document.getElementById('e_patientId').value = row[30] || '';
+    document.getElementById('e_hn').value = row[31] || '';
+    document.getElementById('e_address').value = row[32] || '';
+    document.getElementById('e_dx').value = row[34] || '';
+    document.getElementById('e_bp').value = row[35] || '';
+    document.getElementById('e_pr').value = row[36] || '';
+    document.getElementById('e_rr').value = row[37] || '';
+    document.getElementById('e_bt').value = row[38] || '';
+    document.getElementById('e_o2sat').value = row[39] || '';
+    document.getElementById('e_gcsE').value = row[40] || '';
+    document.getElementById('e_gcsV').value = row[41] || '';
+    document.getElementById('e_gcsM').value = row[42] || '';
+    document.getElementById('e_pupilL').value = row[44] || '';
+    document.getElementById('e_pupilR').value = row[79] || '';
+    document.getElementById('e_dtx').value = row[45] || '';
+    document.getElementById('e_treatment').value = row[46] || '';
+    document.getElementById('e_referHospital').value = row[48] || 'รพ.นครไทย';
+
+    setChipActive('e_shiftGroup', row[2]); selected.shift = row[2] || null;
+    setChipActive('e_receivedFromGroup', row[8]); selected.receivedFrom = row[8] || null;
+    setChipActive('e_incidentTypeGroup', row[9]); selected.incidentType = row[9] || null;
+    setChipActive('e_severityGroup', row[13]); selected.severity = row[13] || null;
+    setChipActive('e_traumaGroup', row[14]); selected.trauma = row[14] || null;
+    setChipActive('e_foundGroup', row[15]); selected.found = row[15] || null;
+    setChipActive('e_outcomeGroup', row[47]); selected.outcome = row[47] || null;
+    setChipActive('e_initialCareGroup', row[65]); selected.initialCare = row[65] || null;
+    setChipActive('e_nationalityGroup', row[69]); selected.nationality = row[69] || null;
+    document.getElementById('e_nationalityDetail').value = row[70] || '';
+    setChipActive('e_rightsGroup', row[71]); selected.rights = row[71] || null;
+    updateNationalityDetailVisibility();
+    clearVitalExtra();
+    try {
+      var vExtra = row[72] ? JSON.parse(row[72]) : [];
+      (vExtra || []).forEach(function(vs){ addVitalExtra(vs); });
+    } catch(errVs){ /* ignore parse error, เริ่มด้วยชุดว่าง */ }
+    updateTraumaVisibility();
+    updateDeathSignatureVisibility();
+    document.getElementById('e_deathSignerName').value = row[67] || '';
+    loadDeathSignatureImage(row[66] || '');
+    loadDeathPhotoPreview(row[68] || '');
+    setStaffSelectValue('e_reportSummarizer', row[73] || '');
+    setStaffSelectValue('e_evaluatorName', row[74] || '');
+    document.getElementById('e_palliativeCare').checked = (row[75] === 'ใช่');
+    document.getElementById('e_palliativeSignerName').value = row[77] || '';
+    loadPalliativeSignatureImage(row[76] || '');
+    updatePalliativeSignatureVisibility();
+    applyFoundLock();
+
+    setMultiChipCSV('e_wound', row[51]); setMultiChipCSV('e_deform', row[52]);
+    setMultiChipCSV('e_bleed', row[53]); setMultiChipCSV('e_organ', row[54]);
+    setMultiChipCSV('e_medical', row[55]); setMultiChipCSV('e_obgyn', row[56]);
+    setMultiChipCSV('e_peds', row[57]); setMultiChipCSV('e_surgical', row[58]); setMultiChipCSV('e_otherNT', row[59]);
+    setMultiChipCSV('e_airway', row[60]); setMultiChipCSV('e_woundCare', row[61]);
+    setMultiChipCSV('e_fluid', row[62]); setMultiChipCSV('e_splint', row[63]); setMultiChipCSV('e_cpr', row[64]);
+
+    var box = document.getElementById('e_referBox');
+    if(row[47] === 'Refer'){ box.classList.remove('hidden'); } else { box.classList.add('hidden'); }
+
+    calcTotalKm();
+    calcGCS();
+    updateTimeCalc();
+  }
+
+  function openALSForm(id){
+    window.open(APP_URL + '?view=als&id=' + encodeURIComponent(id), '_blank');
+  }
+
+  function openBlankALSForm(){
+    window.open(APP_URL + '?view=als_blank', '_blank');
+  }
+  function openSummaryReport(){
+    window.open(APP_URL + '?view=summary', '_blank');
+  }
+
+  function editEMSRow(id, row){
+    clearEMSDraft();
+    emsEditingId = id;
+    showEMS();
+    fillEMSForm(row);
+    document.getElementById('e_editBanner').classList.remove('hidden');
+    document.getElementById('e_submitBtn').textContent = 'บันทึกการแก้ไข';
+    window.scrollTo(0,0);
+  }
+
+  function cancelEditEMS(){
+    emsEditingId = null;
+    document.getElementById('e_editBanner').classList.add('hidden');
+    document.getElementById('e_submitBtn').textContent = 'บันทึกข้อมูล EMS';
+    resetEMS();
+  }
+
+  function deleteEMSRow(id){
+    if(!confirm('ยืนยันลบเคสนี้? เมื่อลบแล้วกู้คืนไม่ได้')) return;
+    google.script.run
+      .withSuccessHandler(function(){
+        toast('ลบเคสแล้ว');
+        if(emsEditingId === id){ cancelEditEMS(); }
+        loadEMSList();
+      })
+      .withFailureHandler(function(err){ toast('ลบไม่สำเร็จ: ' + err.message, true); })
+      .deleteEMS(id);
+  }
+
+  // ===== รายการเคส REFER (ดู/แก้ไข/ลบ) =====
+
+  function loadReferList(){
+    var fromEl = document.getElementById('r_listFrom');
+    var toEl = document.getElementById('r_listTo');
+    if(!fromEl.value || !toEl.value){
+      google.script.run.withSuccessHandler(function(t){
+        if(!fromEl.value) fromEl.value = t.date;
+        if(!toEl.value) toEl.value = t.date;
+        loadReferList();
+      }).getServerTime();
+      return;
+    }
+    document.getElementById('r_listBox').innerHTML = '<div class="record-empty">กำลังโหลด...</div>';
+    google.script.run
+      .withSuccessHandler(renderReferList)
+      .withFailureHandler(function(err){
+        document.getElementById('r_listBox').innerHTML = '<div class="record-empty">โหลดไม่สำเร็จ: ' + escapeHtml(err.message) + '</div>';
+      })
+      .getReferList(fromEl.value, toEl.value);
+  }
+
+  function renderReferList(list){
+    var box = document.getElementById('r_listBox');
+    box.innerHTML = '';
+    if(!list || list.length === 0){
+      box.innerHTML = '<div class="record-empty">ไม่พบเคสในช่วงวันที่ที่เลือก</div>';
+      return;
+    }
+    list.forEach(function(item){
+      var r = item.row;
+      var card = document.createElement('div');
+      card.className = 'record-card';
+      card.innerHTML =
+        '<div class="rc-top"><span>' + escapeHtml(r[2] || '(ไม่ระบุชื่อ)') + '</span><span>' + escapeHtml(r[1] || '-') + '</span></div>' +
+        '<div class="rc-sub">ระดับ: ' + escapeHtml(r[8] || '-') + ' | ส่งต่อ: ' + escapeHtml(r[6] || '-') + ' | ผู้บันทึก: ' + escapeHtml(r[9] || '-') + '</div>' +
+        '<div class="rc-actions">' +
+          '<button type="button" class="rc-edit-btn">แก้ไข</button>' +
+          '<button type="button" class="rc-del-btn">ลบ</button>' +
+          '<button type="button" class="rc-pdf-btn">🖨️ พิมพ์ Refer</button>' +
+        '</div>';
+      card.querySelector('.rc-edit-btn').onclick = function(){ editReferRow(item.id, r); };
+      card.querySelector('.rc-del-btn').onclick = function(){ deleteReferRow(item.id); };
+      card.querySelector('.rc-pdf-btn').onclick = function(){ openReferForm(item.id); };
+      box.appendChild(card);
+    });
+  }
+  function openReferForm(id){
+    window.open(APP_URL + '?view=refer&id=' + encodeURIComponent(id), '_blank');
+  }
+
+  function fillReferForm(row){
+    document.getElementById('r_date').value = row[1] || '';
+    document.getElementById('r_patientName').value = row[2] || '';
+    document.getElementById('r_hn').value = row[3] || '';
+    document.getElementById('r_age').value = row[4] || '';
+    document.getElementById('r_dx').value = row[5] || '';
+    setReferHospitalValue(row[6] || '');
+    setChipActive('r_teamGroup', row[7]); selected.team = row[7] || null;
+    setChipActive('r_sevGroup', row[8]); selected.referSeverity = row[8] || null;
+    setChipActive('r_traumaGroup', row[10]); selected.referTrauma = row[10] || null;
+  }
+
+  function editReferRow(id, row){
+    showRefer();
+    referEditingId = id;
+    fillReferForm(row);
+    document.getElementById('r_editBanner').classList.remove('hidden');
+    document.getElementById('r_submitBtn').textContent = 'บันทึกการแก้ไข';
+    window.scrollTo(0,0);
+  }
+
+  function cancelEditRefer(){
+    referEditingId = null;
+    document.getElementById('r_editBanner').classList.add('hidden');
+    document.getElementById('r_submitBtn').textContent = 'บันทึกข้อมูล REFER';
+    resetRefer();
+  }
+
+  function deleteReferRow(id){
+    if(!confirm('ยืนยันลบเคสนี้? เมื่อลบแล้วกู้คืนไม่ได้')) return;
+    google.script.run
+      .withSuccessHandler(function(){
+        toast('ลบเคสแล้ว');
+        if(referEditingId === id){ cancelEditRefer(); }
+        loadReferList();
+      })
+      .withFailureHandler(function(err){ toast('ลบไม่สำเร็จ: ' + err.message, true); })
+      .deleteRefer(id);
+  }
+
+  function submitEMS(){
+    var data = {
+      staffId: currentStaffId, date: val('e_date'), shift: selected.shift || '', seq: val('e_seq'), opNo: val('e_opNo'),
+      staffRN: val('e_rn'), staffAEMT: val('e_aemt'), staffDriver: val('e_driver'), staffHelper: val('e_helper'),
+      receivedFrom: selected.receivedFrom || '', incidentType: selected.incidentType || '',
+      incident: val('e_incident'), location: val('e_location'), callerPhone: val('e_callerPhone'),
+      severity: selected.severity || '', traumaType: selected.trauma || '', found: selected.found || '',
+      tReceived: val('e_tReceived'), tDispatch: val('e_tDispatch'), tDepartStation: val('e_tDepartStation'),
+      tArriveScene: val('e_tArriveScene'), tDepartScene: val('e_tDepartScene'),
+      tArriveHospital: val('e_tArriveHospital'), tArriveStation: val('e_tArriveStation'),
+      mileOut: val('e_mileOut'), mileScene: val('e_mileScene'), mileHospital: val('e_mileHospital'),
+      mileStation: val('e_mileStation'), totalKm: document.getElementById('e_totalKm').textContent,
+      patientName: val('e_patientName'), age: val('e_age'), patientId: val('e_patientId'), hn: val('e_hn'),
+      address: val('e_address'), dx: val('e_dx'),
+      nationality: selected.nationality || '', nationalityDetail: val('e_nationalityDetail'),
+      rights: selected.rights || '', vitalExtra: getVitalExtraList(),
+      bp: val('e_bp'), pr: val('e_pr'), rr: val('e_rr'), bt: val('e_bt'), o2sat: val('e_o2sat'),
+      gcsE: val('e_gcsE'), gcsV: val('e_gcsV'), gcsM: val('e_gcsM'),
+      gcsTotal: document.getElementById('e_gcsTotal').textContent,
+      pupilL: val('e_pupilL'), pupilR: val('e_pupilR'), dtx: val('e_dtx'), treatment: val('e_treatment'),
+      outcome: selected.outcome || '',
+      referHospital: selected.outcome === 'Refer' ? val('e_referHospital') : '',
+      deathSignature: getDeathSignatureDataUrl(), deathSignerName: val('e_deathSignerName'),
+      deathPhoto: selected.initialCare === 'เสียชีวิต ณ จุดเกิดเหตุ' ? deathPhotoDataUrl : '',
+      wound: getMultiChipCSV('e_wound'), deform: getMultiChipCSV('e_deform'),
+      bleed: getMultiChipCSV('e_bleed'), organ: getMultiChipCSV('e_organ'),
+      medical: getMultiChipCSV('e_medical'), obgyn: getMultiChipCSV('e_obgyn'),
+      peds: getMultiChipCSV('e_peds'), surgical: getMultiChipCSV('e_surgical'), otherNT: getMultiChipCSV('e_otherNT'),
+      airway: getMultiChipCSV('e_airway'), woundCare: getMultiChipCSV('e_woundCare'),
+      fluid: getMultiChipCSV('e_fluid'), splint: getMultiChipCSV('e_splint'), cpr: getMultiChipCSV('e_cpr'),
+      initialCare: selected.initialCare || '',
+      palliativeCare: document.getElementById('e_palliativeCare').checked ? 'ใช่' : '',
+      palliativeSignature: document.getElementById('e_palliativeCare').checked ? getPalliativeSignatureDataUrl() : '',
+      palliativeSignerName: document.getElementById('e_palliativeCare').checked ? val('e_palliativeSignerName') : '',
+      reportSummarizer: val('e_reportSummarizer'), evaluatorName: val('e_evaluatorName')
+    };
+    if(!data.date){ toast('กรุณาเลือกวันที่', true); return; }
+    var editing = !!emsEditingId;
+    var editId = emsEditingId;
+    var btn = document.getElementById('e_submitBtn');
+    btn.disabled = true; btn.textContent = editing ? 'กำลังบันทึกการแก้ไข...' : 'กำลังบันทึก...';
+    var call = google.script.run
+      .withSuccessHandler(function(res){
+        toast(editing ? 'แก้ไขข้อมูล EMS สำเร็จ' : 'บันทึกข้อมูล EMS สำเร็จ');
+        btn.disabled = false;
+        if(!editing){ showLineCopy(buildEMSLineText(data)); }
+        emsEditingId = null;
+        document.getElementById('e_editBanner').classList.add('hidden');
+        resetEMS();
+        btn.textContent = 'บันทึกข้อมูล EMS';
+        loadEMSList();
+      })
+      .withFailureHandler(function(err){
+        toast('เกิดข้อผิดพลาด: ' + err.message, true);
+        btn.disabled = false; btn.textContent = editing ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล EMS';
+      });
+    if(editing){ call.updateEMS(editId, data); } else { call.saveEMS(data); }
+  }
+
+  function submitRefer(){
+    var data = {
+      staffId: currentStaffId, date: val('r_date'), patientName: val('r_patientName'), hn: val('r_hn'), age: val('r_age'),
+      dx: val('r_dx'), referHospital: val('r_referHospital'),
+      team: selected.team || '', severity: selected.referSeverity || '',
+      traumaType: selected.referTrauma || ''
+    };
+    if(!data.date){ toast('กรุณาเลือกวันที่', true); return; }
+    var editing = !!referEditingId;
+    var editId = referEditingId;
+    var btn = document.getElementById('r_submitBtn');
+    btn.disabled = true; btn.textContent = editing ? 'กำลังบันทึกการแก้ไข...' : 'กำลังบันทึก...';
+    var call = google.script.run
+      .withSuccessHandler(function(res){
+        toast(editing ? 'แก้ไขข้อมูล REFER สำเร็จ' : 'บันทึกข้อมูล REFER สำเร็จ');
+        btn.disabled = false;
+        referEditingId = null;
+        document.getElementById('r_editBanner').classList.add('hidden');
+        resetRefer();
+        btn.textContent = 'บันทึกข้อมูล REFER';
+        loadReferList();
+      })
+      .withFailureHandler(function(err){
+        toast('เกิดข้อผิดพลาด: ' + err.message, true);
+        btn.disabled = false; btn.textContent = editing ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล REFER';
+      });
+    if(editing){ call.updateRefer(editId, data); } else { call.saveRefer(data); }
+  }
+
+  function resetEMS(){
+    document.getElementById('emsFormEl').reset();
+    document.querySelectorAll('#emsForm .active').forEach(function(b){ b.classList.remove('active'); });
+    selected.severity = null; selected.trauma = null; selected.outcome = null;
+    selected.shift = null; selected.receivedFrom = null; selected.incidentType = null; selected.found = null;
+    selected.initialCare = null; selected.nationality = null; selected.rights = null;
+    document.getElementById('e_referBox').classList.add('hidden');
+    updateTraumaVisibility();
+    updateDeathSignatureVisibility();
+    updateNationalityDetailVisibility();
+    clearVitalExtra();
+    clearDeathPhoto();
+    clearPalliativeSignature();
+    updatePalliativeSignatureVisibility();
+    applyFoundLock();
+    document.getElementById('e_totalKm').textContent = '0';
+    document.getElementById('e_gcsTotal').textContent = '0';
+    document.getElementById('e_responseTime').textContent = '-';
+    document.getElementById('e_hospitalTime').textContent = '-';
+    document.querySelectorAll('.other-text-input').forEach(function(inp){ inp.value=''; inp.classList.add('hidden'); });
+    ensureToday('e_date');
+    updateSeqPreview();
+    clearEMSDraft();
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById('emsFormEl').addEventListener('input', saveEMSDraft);
+  document.getElementById('emsFormEl').addEventListener('change', saveEMSDraft);
+
+  function resetRefer(){
+    document.getElementById('referFormEl').reset();
+    document.querySelectorAll('#referForm .active').forEach(function(b){ b.classList.remove('active'); });
+    selected.team = null; selected.referSeverity = null; selected.referTrauma = null;
+    document.getElementById('r_referHospital').value = '';
+    ensureToday('r_date');
+    window.scrollTo(0,0);
+  }
+
+  tryAutoLogin();
+</script>
+</body>
+</html>
