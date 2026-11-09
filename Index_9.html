@@ -165,6 +165,13 @@
     margin:0 0 20px; font-family:'Kanit','Sarabun',sans-serif; font-weight:600; font-size:21px; color:var(--navy);
     display:flex; align-items:center; justify-content:center; gap:10px;
   }
+  /* หน้าแรก (Login) โทนสีแดง — มีผลเฉพาะตอนหน้า Login แสดงอยู่ */
+  body:has(#loginScreen:not(.hidden)){background:linear-gradient(160deg,#b71c1c,#e53935) fixed;}
+  body:has(#loginScreen:not(.hidden)) header{
+    background:linear-gradient(135deg,#7f0000,#c62828); border-bottom-color:#ff8a80;
+  }
+  body:has(#loginScreen:not(.hidden)) .login-card{border-color:#ffcdd2; box-shadow:0 8px 24px rgba(0,0,0,.25);}
+  body:has(#loginScreen:not(.hidden)) .login-card .submit-btn{background:#c62828;}
   .login-card .field{text-align:left;}
   .login-card input{text-align:center; letter-spacing:.08em; font-size:16px;}
   .login-error{
