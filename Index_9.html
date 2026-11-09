@@ -10,9 +10,10 @@
 <style>
   :root{
     --red:#e53935; --yellow:#fdd835; --green:#43a047; --white:#ffffff; --black:#212121;
-    --navy:#0a2e4d; --blue:#146aa8; --blue-light:#2f8fd1;
-    --hivis:#8bd13c; --hivis-dark:#5c9a1e; --hivis-soft:#eef8e0;
-    --ink:#1f2430; --muted:#5f6b66; --line:#dbe4de; --bg:#f1f6f3; --card:#ffffff;
+    /* ธีมสีแดงทั้งเว็บ */
+    --navy:#7f0000; --blue:#c62828; --blue-light:#e53935;
+    --hivis:#ff8a80; --hivis-dark:#c62828; --hivis-soft:#fdecea;
+    --ink:#1f2430; --muted:#6b5f5f; --line:#f0d6d6; --bg:#fdf3f3; --card:#ffffff;
   }
   *{box-sizing:border-box;}
   body{
@@ -80,7 +81,7 @@
   .time-row{display:flex; gap:6px; align-items:center;}
   .time-row input{flex:1;}
   .now-btn{
-    background:var(--hivis-soft); border:1px solid #c9e6a8; color:var(--hivis-dark); border-radius:8px; padding:9px 10px;
+    background:var(--hivis-soft); border:1px solid #f6cfcb; color:var(--hivis-dark); border-radius:8px; padding:9px 10px;
     font-size:12px; white-space:nowrap; cursor:pointer;
   }
 
@@ -144,7 +145,7 @@
   .record-card .rc-top span:last-child{font-weight:500; color:var(--muted); font-size:12px; white-space:nowrap;}
   .record-card .rc-sub{font-size:12px; color:var(--muted); margin-top:3px;}
   .record-card .rc-actions{display:flex; gap:8px; margin-top:8px;}
-  .rc-edit-btn{flex:1; padding:8px; border-radius:8px; border:1px solid var(--blue); background:#eaf3fb; color:var(--blue); font-size:12.5px; font-weight:600; cursor:pointer;}
+  .rc-edit-btn{flex:1; padding:8px; border-radius:8px; border:1px solid var(--blue); background:#fdecea; color:var(--blue); font-size:12.5px; font-weight:600; cursor:pointer;}
   .rc-pdf-btn{flex:1; padding:8px; border-radius:8px; border:1px solid var(--hivis-dark); background:var(--hivis-soft); color:var(--hivis-dark); font-size:12.5px; font-weight:600; cursor:pointer;}
   .rc-del-btn{padding:8px 12px; border-radius:8px; border:1px solid #f6cfcb; background:#fdecea; color:#b3261e; font-size:12.5px; cursor:pointer;}
   .record-empty{font-size:13px; color:var(--muted); text-align:center; padding:14px 0;}
